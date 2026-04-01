@@ -1,6 +1,17 @@
+# Datasets
+data/
+
+# Output files
+output/
+
+# Python
 venv/
 
 # Ignore Python cache
 __pycache__/
-*.py[cod]
-*/__pycache__/
+*.pyc
+.pytest_cache/
+
+# OS
+.DS_Store
+Thumbs.db
