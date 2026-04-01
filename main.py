@@ -42,6 +42,7 @@ Examples:
     parser.add_argument("--z-threshold",     type=float, default=3.0,  help="Z-score threshold (default: 3.0)")
     parser.add_argument("--min-score",       type=float, default=0.25, help="Min anomaly score to report (default: 0.25)")
     parser.add_argument("--no-plot",         action="store_true",      help="Skip chart generation")
+    parser.add_argument("--exclude-cols", default="", help="Comma-separated columns to drop before detection (e.g. Time,Class)")
     args = parser.parse_args()
 
     os.makedirs(args.output, exist_ok=True)
@@ -51,6 +52,10 @@ Examples:
     df = load(args.input)
     print(f"      {len(df)} rows × {len(df.columns)} columns | "
           f"time-series={df.attrs.get('is_timeseries', False)}")
+    if args.exclude_cols:
+        drop = [c.strip() for c in args.exclude_cols.split(",") if c.strip() in df.columns]
+        df = df.drop(columns=drop)
+        print(f"      Dropped columns: {drop}")
 
     print("[2/5] Building baseline")
     if args.baseline_path and os.path.exists(args.baseline_path):
@@ -71,7 +76,7 @@ Examples:
     print(f"      {n_flagged} rows flagged (score ≥ {args.min_score})")
 
     print("[4/5] Generating explanations")
-    explanations = explain(result, profile, df, min_score=args.min_score)
+    explanations = explain(result, profile, df, min_score=args.min_score, limit=500)
     print(summary(explanations))
 
     json_path = os.path.join(args.output, f"{stem}_anomalies.json")

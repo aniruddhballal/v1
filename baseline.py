@@ -9,7 +9,7 @@ def learn(df: pd.DataFrame, window: int = 30) -> dict:
     Learn what 'normal' looks like for this dataset.
     Returns a baseline profile dict. Saves to JSON if save_path given.
     """
-    numeric_cols = df.attrs.get("numeric_cols", df.select_dtypes(include=[np.number]).columns.tolist())
+    numeric_cols = [c for c in df.attrs.get("numeric_cols", df.select_dtypes(include=[np.number]).columns.tolist()) if c in df.columns]
     is_timeseries = df.attrs.get("is_timeseries", False)
     profile = {"is_timeseries": is_timeseries, "window": window, "columns": {}}
 

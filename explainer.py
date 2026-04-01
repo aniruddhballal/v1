@@ -72,13 +72,9 @@ def explain_row(row: pd.Series, profile: dict, original_df: pd.DataFrame) -> dic
 
 
 def run(detection_result: pd.DataFrame, profile: dict,
-        original_df: pd.DataFrame, min_score: float = 0.25) -> list[dict]:
-    """
-    Run explainer on all flagged rows.
-    Only explains rows where anomaly_score >= min_score (flagged by 1+ methods).
-    Returns a sorted list of explanation dicts, highest score first.
-    """
+        original_df: pd.DataFrame, min_score: float = 0.25, limit: int = 500) -> list[dict]:
     flagged = detection_result[detection_result["anomaly_score"] >= min_score]
+    flagged = flagged.nlargest(limit, "anomaly_score")
     explanations = [explain_row(row, profile, original_df) for _, row in flagged.iterrows()]
     return sorted(explanations, key=lambda x: x["anomaly_score"], reverse=True)
 
