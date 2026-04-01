@@ -1,0 +1,13 @@
+# config.yaml
+# User-defined rules. Format: column_name: {operator: value}
+# Operators: gt, lt, gte, lte, eq
+# These run as Layer 3 on top of statistical + ML detection.
+
+rules: {}
+
+# Example (uncomment to activate):
+# rules:
+#   transaction_amount:
+#     gt: 0.95        # flag values above 95th percentile of normalized range
+#   value:
+#     lt: 0.01
